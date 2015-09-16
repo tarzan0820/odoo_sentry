@@ -25,12 +25,9 @@
     'author': 'Mohammed Barsi',
     'sequence': 4,
     'summary': 'Exceptions tracker',
-    'description':
-        """
-Provide a pluggable base to connect Odoo with Sentry.
-====================================================
-
-        """,
+    'description': """
+Provides a pluggable base to connect Odoo with Sentry.
+""",
     'depends': ['base'],
     'auto_install': False,
     'application': True,

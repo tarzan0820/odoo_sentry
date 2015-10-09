@@ -24,6 +24,7 @@
     'version': '1.0',
     'author': 'Mohammed Barsi',
     'sequence': 4,
+    'category': 'Extra Tools',
     'summary': 'Exceptions tracker',
     'description': """
 Provides a pluggable base to connect Odoo with Sentry.

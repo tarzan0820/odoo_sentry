@@ -19,7 +19,6 @@
 #
 ##############################################################################
 
-import traceback
 import logging
 import sys
 
@@ -63,7 +62,7 @@ def get_user_context():
     cxt = {}
     try:
         session = getattr(request, 'session', {})
-    except RuntimeError as e:
+    except RuntimeError:
         pass
     else:
         cxt.update({
@@ -128,8 +127,10 @@ if ENABLE_LOGGING:
     setup_logging(handler, exclude=EXCLUDE_LOGGER_DEFAULTS)
 
 if ALLOW_ORM_WARNING:
-    openerp.addons.web.controllers.main._serialize_exception = serialize_exception
-    openerp.addons.report.controllers.main._serialize_exception = serialize_exception
+    openerp.addons.web.controllers.main._serialize_exception = \
+        serialize_exception
+    openerp.addons.report.controllers.main._serialize_exception = \
+        serialize_exception
 
 # wrap the main wsgi app
 openerp.service.wsgi_server.application = Sentry(

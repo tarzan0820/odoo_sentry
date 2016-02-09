@@ -113,31 +113,31 @@ class ContextSentryHandler(SentryHandler):
             client.extra_context(get_user_context())
         super(ContextSentryHandler, self).emit(rec)
 
-
-client = Client(CLIENT_DSN)
-
-if LOGGING_LEVEL not in LOGLEVELS:
-    LOGGING_LEVEL = 'warn'
-
-if ENABLE_LOGGING:
-    # future enhancement: add exclude loggers option
-    EXCLUDE_LOGGER_DEFAULTS += ('werkzeug',)
-    handler = ContextSentryHandler(
-        client=client, level=LOGLEVELS[LOGGING_LEVEL],
-        allow_orm=ALLOW_ORM_WARNING)
-    setup_logging(handler, exclude=EXCLUDE_LOGGER_DEFAULTS)
-
-if ALLOW_ORM_WARNING:
-    openerp.addons.web.controllers.main._serialize_exception = \
-        serialize_exception
-    openerp.addons.report.controllers.main._serialize_exception = \
-        serialize_exception
-
-# wrap the main wsgi app
-openerp.service.wsgi_server.application = Sentry(
-    openerp.service.wsgi_server.application, client=client)
-
-if INCLUDE_USER_CONTEXT:
-    client.extra_context(get_user_context())
-# Fire the first message
-client.captureMessage('Starting Odoo Server')
+if CLIENT_DSN:
+    client = Client(CLIENT_DSN)
+    
+    if LOGGING_LEVEL not in LOGLEVELS:
+        LOGGING_LEVEL = 'warn'
+    
+    if ENABLE_LOGGING:
+        # future enhancement: add exclude loggers option
+        EXCLUDE_LOGGER_DEFAULTS += ('werkzeug',)
+        handler = ContextSentryHandler(
+            client=client, level=LOGLEVELS[LOGGING_LEVEL],
+            allow_orm=ALLOW_ORM_WARNING)
+        setup_logging(handler, exclude=EXCLUDE_LOGGER_DEFAULTS)
+    
+    if ALLOW_ORM_WARNING:
+        openerp.addons.web.controllers.main._serialize_exception = \
+            serialize_exception
+        openerp.addons.report.controllers.main._serialize_exception = \
+            serialize_exception
+    
+    # wrap the main wsgi app
+    openerp.service.wsgi_server.application = Sentry(
+        openerp.service.wsgi_server.application, client=client)
+    
+    if INCLUDE_USER_CONTEXT:
+        client.extra_context(get_user_context())
+    # Fire the first message
+    client.captureMessage('Starting Odoo Server')
